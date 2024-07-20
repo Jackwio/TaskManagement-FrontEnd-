@@ -1,0 +1,110 @@
+.sidebar {
+    background-color: #343a40;
+    color: #ffffff;
+    height: 100vh;
+}
+
+/* 以下為main header和側邊欄css */
+.sidebar .nav-link {
+    color: #ffffff;
+}
+
+.sidebar .nav-link.active {
+    background-color: #495057;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #495057;
+    color: #ffc107;
+}
+
+.sidebar .dropdown-menu {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+.sidebar .dropdown-item {
+    color: #ffffff;
+}
+
+.sidebar .dropdown-item:hover {
+    background-color: #495057;
+}
+
+.sidebar .dropdown-divider {
+    border-color: #495057;
+}
+
+.sidebar .rounded-circle {
+    border: 2px solid #ffc107;
+}
+
+.header {
+    background-color: #343a40;
+    color: #ffffff;
+    padding: 1rem 0;
+}
+
+.header .nav-link {
+    color: #ffffff;
+}
+
+.header .nav-link:hover {
+    color: #ffc107;
+}
+
+.header .form-control {
+    background-color: #495057;
+    border: none;
+    color: #ffffff;
+}
+
+.header .form-control::placeholder {
+    color: #ced4da;
+}
+
+.header .dropdown-menu {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+.header .dropdown-item {
+    color: #ffffff;
+}
+
+.header .dropdown-item:hover {
+    background-color: #495057;
+}
+
+.header .dropdown-divider {
+    border-color: #495057;
+}
+
+.header .rounded-circle {
+    border: 2px solid #ffc107;
+}
+
+/* end */
+
+#calendar {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* footer */
+.custom-border-top {
+    border-top: 2px solid #ccc;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* end */
+
+/* modal */
+.text-left {
+    text-align: left;
+}
+
+/* end */
