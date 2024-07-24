@@ -1,14 +1,18 @@
 <template>
-  <Main/>
+  <div class="row">
+    <SideBar/>
+    <Main/>
+  </div>
 </template>
 
 <script>
 import Main from './components/Main'
+import SideBar from './components/SideBar'
 
 export default {
   name: 'App',
   components: {
-    Main
+    Main,SideBar
   },
 }
 </script>

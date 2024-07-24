@@ -122,3 +122,14 @@
 }
 
 /* end */
+
+/* 主畫面lang下拉選單 */
+.language-selector {
+    display: inline-block;
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+  }
+  /* end */

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex-grow-1 col-lg-9" style="margin-right: 15px">
     <div id="calendar"></div>
     <!-- Modal -->
     <div
@@ -23,14 +23,14 @@
           <div class="modal-body">
             <form>
               <div class="mb-3 custom-input text-left">
-                <label for="lang" class="form-label" >語言</label>
-                <select id="lang" class="form-select" v-model="chooseLang">     
+                <label for="lang" class="form-label">語言</label>
+                <select id="lang" class="form-select" v-model="chooseLang">
                   <option value="1">繁體中文</option>
-                  <option value="2">English</option>        
+                  <option value="2">English</option>
                 </select>
               </div>
               <div class="mb-3 custom-input text-left">
-                <label for="task-name" class="form-label" >Task Name</label>
+                <label for="task-name" class="form-label">Task Name</label>
                 <input
                   type="text"
                   class="form-control"
@@ -50,19 +50,23 @@
               <!-- 任務類別 -->
               <div class="mb-3 custom-input text-left">
                 <label for="task-category" class="form-label">Category</label>
-                <select id="task-category" class="form-select" v-model="currentCategory">     
-                  <option v-for="c in currentLangCategory" :key="c.id" :value="c.missionCategoryId">
+                <select id="task-category" class="form-select" v-model="currentCategory">
+                  <option
+                    v-for="c in currentLangCategory"
+                    :key="c.id"
+                    :value="c.missionCategoryId"
+                  >
                     {{ c.missionCategoryName }}
-                  </option>       
+                  </option>
                 </select>
               </div>
               <div class="mb-3 custom-input text-left">
                 <label for="task-start-date" class="form-label">start Date</label>
-                <input type="date" class="form-control" id="task-start-date" />
+                <input type="datetime-local" class="form-control" id="task-start-date" />
               </div>
               <div class="mb-3 custom-input text-left">
                 <label for="task-end-date" class="form-label">end Date</label>
-                <input type="date" class="form-control" id="task-end-date" />
+                <input type="datetime-local" class="form-control" id="task-end-date" />
               </div>
               <div class="mb-3 custom-input text-left">
                 <label for="task-priority" class="form-label">Priority</label>
@@ -101,16 +105,35 @@ export default {
   name: "Main",
   data() {
     return {
-      chooseLang : '1',
-      missionCategory: [{
-        id : 0,
-        missionCategoryName : "Choose Priority",
-        lang : this.chooseLang
-      }],
-      currentCategory: '0',
+      currentLang: 1,
+      chooseLang: "1",
+      missionCategory: [
+        {
+          id: 0,
+          missionCategoryName: "Choose Priority",
+          lang: this.chooseLang,
+        },
+      ],
+      currentCategory: "0",
       currentLangCategory: [],
       address: "桃園",
     };
+  },
+  mounted() {
+    $("#lang .dropdown-item").on("click", (event) => {
+      event.preventDefault();
+      const langText = $(event.target).text().trim();
+      if (langText === "中文") {
+        this.currentLang = 1;
+      } else if (langText === "English") {
+        this.currentLang = 2;
+      } else if (langText === "Español") {
+        this.currentLang = 3;
+      } else if (langText === "Français") {
+        this.currentLang = 4;
+      }
+      console.log("Current Language:", this.currentLang);
+    });
   },
   // computed:{
   //   chooseLang: () => {
@@ -153,9 +176,9 @@ export default {
             //     ],
             //     "id": "e0ee31a1-c4db-0860-686a-3a13bc95292e"
             // },....]
-            $.each(response,(index,value) => {
+            $.each(response, (index, value) => {
               this.missionCategory.push(value);
-              if(value.lang == this.chooseLang){
+              if (value.lang == this.chooseLang) {
                 this.currentLangCategory.push(value);
               }
             });
@@ -163,26 +186,44 @@ export default {
             console.log(this.missionCategory);
             console.log(this.currentLangCategory);
           },
-          error: function (xhr, status, error) {
-            $("#result").html("Error: " + xhr.responseText);
+          error: function (jqXHR, textStatus, errorThrown) {
+            const errorResponse = jqXHR.responseJSON;
+            $("#errorMessage").text(
+              `Error: ${errorResponse.statusCode} - ${errorResponse.message}`
+            );
+            console.error("Error:", textStatus, errorThrown);
           },
         });
       },
     },
-    // 監測語系改變
-    chooseLang:{
-      handler(newValue,oldValue){
+    // 監測語系改變(新增)
+    chooseLang: {
+      immediate: true,
+      handler(newValue, oldValue) {
         // 更新當前語系
         this.chooseLang = newValue;
         // 清除舊陣列元素
         this.currentLangCategory.length = 0;
-        $.each(this.missionCategory,(index,value) => {
-            if(value.lang == this.chooseLang){
-              this.currentLangCategory.push(value);
-            }
+        $.each(this.missionCategory, (index, value) => {
+          if (value.lang == this.chooseLang) {
+            this.currentLangCategory.push(value);
+          }
         });
-      }
-    }
-  }
+      },
+    },
+    // 監測語系改變(主)
+    currentLang: {
+      handler(newValue, oldValue) {
+        // filter月曆上的mission
+        // 清除舊陣列元素
+        // this.currentLangCategory.length = 0;
+        // $.each(this.missionCategory, (index, value) => {
+        //   if (value.lang == this.currentLang) {
+        //     this.currentLangCategory.push(value);
+        //   }
+        // });
+      },
+    },
+  },
 };
 </script>
