@@ -35,7 +35,7 @@ $(document).ready(function () {
     // 抓後端父任務
     $.ajax({
         url: 'https://localhost:44366/api/mission/get-parent-mission',
-        type: 'POST',
+        type: 'GET',
         contentType: 'application/json', // 設置 Content-Type
         success: function (response) {
             // 回傳值結構 json{
