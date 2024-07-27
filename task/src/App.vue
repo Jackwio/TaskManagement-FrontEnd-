@@ -1,22 +1,21 @@
 <template>
   <div class="row">
-    <SideBar />
-    <!-- <Main /> -->
-    <Test />
+    <SideBar/>
+    <Main/>
   </div>
 </template>
 
 <script>
-import Main from "./components/Main";
 import SideBar from "./components/SideBar";
-import Test from "./components/Test";
+import Main from "./components/Main.vue";
 
 export default {
   name: "App",
   components: {
-    // Main,
+    // for 月曆
+    Main,
+    // for側邊任務類別tab
     SideBar,
-    Test,
   },
 };
 </script>

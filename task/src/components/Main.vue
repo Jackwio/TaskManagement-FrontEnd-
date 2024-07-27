@@ -1,23 +1,31 @@
 <template>
-  <div class="flex-grow-1 col-lg-9" style="margin-right: 15px">
-    <div id="calendar"></div>
+  <div class="flex-grow-1 col-lg-9">
+    <FullCalendar :options="calendarOptions">
+      <template v-slot:eventContent="arg">
+        <div class="event-container">
+          <b>{{ arg.timeText }}</b>
+          <i>{{ arg.event.title }}</i>
+          <div class="event-description">{{ arg.event.extendedProps.description }}</div>
+        </div>
+      </template>
+    </FullCalendar>
     <!-- Modal -->
     <div
-      class="modal fade"
-      id="add-modal"
-      tabindex="-1"
-      aria-labelledby="taskModalLabel"
-      aria-hidden="true"
+        class="modal fade"
+        id="add-modal"
+        tabindex="-1"
+        aria-labelledby="taskModalLabel"
+        aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="taskModalLabel">Add New Task</h5>
             <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
             ></button>
           </div>
           <div class="modal-body">
@@ -32,19 +40,19 @@
               <div class="mb-3 custom-input text-left">
                 <label for="task-name" class="form-label">Task Name</label>
                 <input
-                  type="text"
-                  class="form-control"
-                  id="task-name"
-                  placeholder="Enter task name"
+                    type="text"
+                    class="form-control"
+                    id="task-name"
+                    placeholder="Enter task name"
                 />
               </div>
               <div class="mb-3 custom-input text-left">
                 <label for="task-description" class="form-label">Task Description</label>
                 <input
-                  type="text"
-                  class="form-control"
-                  id="task-description"
-                  placeholder="Enter task description"
+                    type="text"
+                    class="form-control"
+                    id="task-description"
+                    placeholder="Enter task description"
                 />
               </div>
               <!-- 任務類別 -->
@@ -52,9 +60,9 @@
                 <label for="task-category" class="form-label">Category</label>
                 <select id="task-category" class="form-select" v-model="currentCategory">
                   <option
-                    v-for="c in currentLangCategory"
-                    :key="c.id"
-                    :value="c.missionCategoryId"
+                      v-for="c in currentLangCategory"
+                      :key="c.id"
+                      :value="c.missionCategoryId"
                   >
                     {{ c.missionCategoryName }}
                   </option>
@@ -62,11 +70,11 @@
               </div>
               <div class="mb-3 custom-input text-left">
                 <label for="task-start-date" class="form-label">start Date</label>
-                <input type="datetime-local" class="form-control" id="task-start-date" />
+                <input type="datetime-local" class="form-control" id="task-start-date"/>
               </div>
               <div class="mb-3 custom-input text-left">
                 <label for="task-end-date" class="form-label">end Date</label>
-                <input type="datetime-local" class="form-control" id="task-end-date" />
+                <input type="datetime-local" class="form-control" id="task-end-date"/>
               </div>
               <div class="mb-3 custom-input text-left">
                 <label for="task-priority" class="form-label">Priority</label>
@@ -85,7 +93,12 @@
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
               Close
             </button>
-            <button id="add-mission" type="button" class="btn btn-primary">
+            <button
+                id="add-mission"
+                type="button"
+                class="btn btn-primary"
+                @click="addMission"
+            >
               Save Task
             </button>
           </div>
@@ -95,31 +108,63 @@
   </div>
 </template>
 
-<script setup>
-import("/public/css/main.css");
-import("/public/js/main.js");
-</script>
-
 <script>
+import FullCalendar from "@fullcalendar/vue3";
+import dayGridPlugin from "@fullcalendar/daygrid";
+
 export default {
   name: "Main",
-  data() {
+  components: {
+    FullCalendar,
+  },
+  data: function () {
     return {
+      // 主畫面當前語系
       currentLang: 1,
-      chooseLang: "1",
-      missionCategory: [
-        {
-          id: 0,
-          missionCategoryName: "Choose Priority",
-          lang: this.chooseLang,
-        },
-      ],
-      currentCategory: "0",
+      //add-modal新增語系
+      chooseLang: 1,
+      currentCategory: "",
+      // 所有和當前語系的
+      category: [],
       currentLangCategory: [],
-      address: "桃園",
+      events: [
+        // event definition
+        // {
+        //   title: "Meeting",
+        //   start: "2024-07-29",
+        //   end: "2024-07-31",
+        //   extendedProps: {
+        //     description:
+        //       "This is a meeting with the team to discuss the project progress.",
+        //   },
+        // },
+      ],
+      currentEvents: [],
+      calendarOptions: {
+        plugins: [dayGridPlugin],
+        initialView: "dayGridMonth",
+        weekends: true,
+        events: this.events, // Use the events array here
+        headerToolbar: {
+          left: "prev,next,addEventButton",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek",
+        },
+        customButtons: {
+          addEventButton: {
+            text: "add event...",
+            click: function () {
+              // add-modal定義
+              var myModal = new bootstrap.Modal(document.getElementById("add-modal"));
+              myModal.show();
+            },
+          },
+        },
+      },
     };
   },
   mounted() {
+    // 綁定語言選擇下拉選項點擊事件
     $("#lang .dropdown-item").on("click", (event) => {
       event.preventDefault();
       const langText = $(event.target).text().trim();
@@ -134,52 +179,150 @@ export default {
       }
       console.log("Current Language:", this.currentLang);
     });
-  },
-  // computed:{
-  //   chooseLang: () => {
-  //     console.log(this)
-  //   }
-  // },
-  methods: {
-    changeName() {
-      this.name = "will";
-    },
-  },
-  // 監視屬性
-  watch: {
-    // 任務類別
-    missionCategory: {
-      // 立即監視。可以讓數據還沒發生變化，Vue初次渲染就調用handler函數
-      immediate: true,
-      // 當被監視屬性發生變化，會自動調用handler方法。參數則可以傳入位置1:newValue,位置2:oldValue
-      handler(newValue, oldValue) {
-        // 取得任務分類
-        $.ajax({
-          url: "http://localhost:44366/api/mission-category/get-all",
-          type: "GET",
-          contentType: "application/json", // 設置 Content-Type
-          // success要改成箭頭函數，不然裡面的this不會是vue實例
-          success: (response) => {
-            $.each(response, (index, value) => {
-              this.missionCategory.push(value);
-              if (value.lang == this.chooseLang) {
-                this.currentLangCategory.push(value);
-              }
-            });
-            this.currentCategory = this.missionCategory[0]["missionCategoryId"];
-            console.log(this.missionCategory);
-            console.log(this.currentLangCategory);
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            const errorResponse = jqXHR.responseJSON;
-            $("#errorMessage").text(
-              `Error: ${errorResponse.statusCode} - ${errorResponse.message}`
-            );
-            console.error("Error:", textStatus, errorThrown);
-          },
+
+    // 撈後端父任務
+    $.ajax({
+      url: "http://localhost:44366/api/mission/get-parent-mission",
+      type: "GET",
+      contentType: "application/json", // 設置 Content-Type
+      success: (response) => {
+        console.log(response);
+        $.each(response, (index, value) => {
+          var colorDisplay = "#008000";
+          if (value["missionPriority"] == 4) {
+            colorDisplay = "#0000FF";
+          } else if (value["missionPriority"] == 3) {
+            colorDisplay = "#FFFF00";
+          } else if (value["missionPriority"] == 2) {
+            colorDisplay = "#FFA500";
+          } else if (value["missionPriority"] == 1) {
+            colorDisplay = "#FF0000";
+          }
+          this.events.push({
+            id: value["missionId"],
+            title: value["missionName"],
+            extendedProps: {
+              description: value["missionDescription"],
+            },
+            start: value["missionStartTime"],
+            end: value["missionEndTime"],
+            color: colorDisplay,
+            lang: value["lang"],
+          });
         });
       },
+      error: function (xhr, status, error) {
+        console.log(xhr);
+        console.log(error);
+      },
+    });
+
+    // 撈任務類別
+    $.ajax({
+      url: "http://localhost:44366/api/mission-category/get-all",
+      type: "GET",
+      contentType: "application/json", // 設置 Content-Type
+      // success要改成箭頭函數，不然裡面的this不會是vue實例
+      success: (response) => {
+        $.each(response, (index, value) => {
+          this.category.push(value);
+          if (value.lang == this.currentLang) {
+            this.currentLangCategory.push(value);
+          }
+        });
+        this.currentCategory = this.currentLangCategory[0]["missionCategoryId"];
+        console.log(this.missionCategory);
+        console.log(this.currentLangCategory);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        const errorResponse = jqXHR.responseJSON;
+        $("#errorMessage").text(
+            `Error: ${errorResponse.statusCode} - ${errorResponse.message}`
+        );
+        console.error("Error:", textStatus, errorThrown);
+      },
+    });
+    // You may need to update calendarOptions to reflect the changes
+    this.calendarOptions.events = this.events;
+  },
+  methods: {
+    addMission() {
+      // 新增任務
+      var taskName = $("#task-name").val();
+      var taskDescription = $("#task-description").val();
+      var taskCategory = $("#task-category").val();
+      var taskStartDate = $("#task-start-date").val();
+      var taskEndDate = $("#task-end-date").val();
+      var taskPriority = $("#task-priority").val();
+      var data = {
+        missionPriority: taskPriority,
+        missionCategoryId: taskCategory,
+        missionStartTime: taskStartDate,
+        missionEndTime: taskEndDate,
+        missionName: taskName,
+        missionDescription: taskDescription,
+        lang: this.chooseLang,
+      };
+      console.log(data);
+
+      $.ajax({
+        url: "http://localhost:44366/api/mission/data-post",
+        type: "POST",
+        contentType: "application/json", // 設置 Content-Type
+        data: JSON.stringify(data),
+        success: (response) => {
+          console.log(response);
+          var colorDisplay = "#008000";
+          if (data["missionPriority"] == 4) {
+            colorDisplay = "#0000FF";
+          } else if (data["missionPriority"] == 3) {
+            colorDisplay = "#FFFF00";
+          } else if (data["missionPriority"] == 2) {
+            colorDisplay = "#FFA500";
+          } else if (data["missionPriority"] == 1) {
+            colorDisplay = "#FF0000";
+          }
+          this.events.push({
+            id: response["id"],
+            title: data["missionName"],
+            description: data["missionDescription"],
+            start: data["missionStartTime"],
+            end: data["missionEndTime"],
+            color: colorDisplay,
+          });
+
+          // 必須用同一個modal變數關閉，不然會無法關
+          // var myModal = new bootstrap.Modal(document.getElementById('add-modal'));
+          myModal.hide();
+
+          toastr.options = {
+            closeButton: false,
+            debug: false,
+            newestOnTop: false,
+            progressBar: false,
+            positionClass: "toast-top-center",
+            preventDuplicates: false,
+            onclick: null,
+            showDuration: "300",
+            hideDuration: "1000",
+            timeOut: "5000",
+            extendedTimeOut: "1000",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut",
+          };
+          toastr.success("新增成功");
+        },
+        error: function (xhr, status, error) {
+          $("#result").html("Error: " + xhr.responseText);
+        },
+      });
+      // You may need to update calendarOptions to reflect the changes
+      this.calendarOptions.events = this.events;
     },
+  },
+  watch: {
     // 監測語系改變(新增)
     chooseLang: {
       immediate: true,
@@ -188,7 +331,7 @@ export default {
         this.chooseLang = newValue;
         // 清除舊陣列元素
         this.currentLangCategory.length = 0;
-        $.each(this.missionCategory, (index, value) => {
+        $.each(this.category, (index, value) => {
           if (value.lang == this.chooseLang) {
             this.currentLangCategory.push(value);
           }
@@ -200,14 +343,38 @@ export default {
       handler(newValue, oldValue) {
         // filter月曆上的mission
         // 清除舊陣列元素
-        // this.currentLangCategory.length = 0;
-        // $.each(this.missionCategory, (index, value) => {
-        //   if (value.lang == this.currentLang) {
-        //     this.currentLangCategory.push(value);
-        //   }
-        // });
+        this.currentEvents.length = 0;
+        $.each(this.events, (index, value) => {
+          if (value.lang == this.currentLang) {
+            this.currentEvents.push(value);
+          }
+        });
+        // You may need to update calendarOptions to reflect the changes
+        this.calendarOptions.events = this.currentEvents;
       },
     },
   },
 };
 </script>
+
+<style>
+.event-container {
+  position: relative;
+}
+
+.event-description {
+  display: none;
+  position: absolute; /* Position it absolutely within the container */
+  background: #f9f9f9;
+  color: black;
+  border: 1px solid #ccc;
+  padding: 5px;
+  z-index: 10000; /* Ensure it is on top */
+  top: 100%; /* Adjust according to your needs */
+  left: 0;
+}
+
+.event-container:hover .event-description {
+  display: block;
+}
+</style>

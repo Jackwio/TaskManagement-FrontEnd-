@@ -3,8 +3,6 @@
 //引入Vue
 import {createApp} from 'vue'
 import App from './App'  //suffix為.vue可以省略。App為一人之下，萬人之上的組件
-// import '@fullcalendar/core/main.css';
-// import '@fullcalendar/daygrid/main.css';
 // Vue.config.productionTip=false 
 
 // 建立vm
