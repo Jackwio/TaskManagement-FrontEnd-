@@ -1,20 +1,24 @@
 <template>
   <div class="row">
-    <SideBar/>
-    <Main/>
+    <SideBar />
+    <!-- <Main /> -->
+    <Test />
   </div>
 </template>
 
 <script>
-import Main from './components/Main'
-import SideBar from './components/SideBar'
+import Main from "./components/Main";
+import SideBar from "./components/SideBar";
+import Test from "./components/Test";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    Main,SideBar
+    // Main,
+    SideBar,
+    Test,
   },
-}
+};
 </script>
 
 <style>

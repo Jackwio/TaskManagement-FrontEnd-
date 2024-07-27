@@ -155,27 +155,11 @@ export default {
       handler(newValue, oldValue) {
         // 取得任務分類
         $.ajax({
-          url: "https://localhost:44366/api/mission-category/get-all",
+          url: "http://localhost:44366/api/mission-category/get-all",
           type: "GET",
           contentType: "application/json", // 設置 Content-Type
           // success要改成箭頭函數，不然裡面的this不會是vue實例
           success: (response) => {
-            // 回傳值結構 json[{
-            //     "userId": null,
-            //     "missionCategoryI18Dtos": [
-            //       {
-            //         "missionCategoryName": "健身!",
-            //         "lang": 1,
-            //         "id": "ad3b205c-2972-0673-d32e-3a13bc952ae4"
-            //       },
-            //       {
-            //         "missionCategoryName": "fitness",
-            //         "lang": 2,
-            //         "id": "81cdc66c-f0c7-dabe-5248-3a13bc95e0fb"
-            //       }
-            //     ],
-            //     "id": "e0ee31a1-c4db-0860-686a-3a13bc95292e"
-            // },....]
             $.each(response, (index, value) => {
               this.missionCategory.push(value);
               if (value.lang == this.chooseLang) {

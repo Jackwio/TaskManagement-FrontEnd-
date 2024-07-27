@@ -18,7 +18,7 @@
               <a
                 href="#"
                 class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                >{{c.missionName}}</a
+                >{{ c.missionName }}</a
               >
             </li>
             <!-- <li>
@@ -47,14 +47,14 @@ export default {
   name: "SideBar",
   data() {
     return {
-      mission:[],
-      currentCategoryMission:[],
-      currentLangMission:[],
+      mission: [],
+      currentCategoryMission: [],
+      currentLangMission: [],
       missionCategory: [],
       currentLangCategory: [],
       currentLang: 1,
-      currentCategory: '',
-      activeCategory: ''
+      currentCategory: "",
+      activeCategory: "",
     };
   },
   mounted() {
@@ -76,7 +76,7 @@ export default {
 
     // 加載任務類別
     $.ajax({
-      url: "https://localhost:44366/api/mission-category/get-all",
+      url: "http://localhost:44366/api/mission-category/get-all",
       type: "GET",
       contentType: "application/json", // 設置 Content-Type
       // success要改成箭頭函數，不然裡面的this不會是vue實例
@@ -98,10 +98,10 @@ export default {
         console.error("Error:", textStatus, errorThrown);
       },
     });
-  
+
     // 加載所有任務
     $.ajax({
-      url: "https://localhost:44366/api/mission/get-parent-mission",
+      url: "http://localhost:44366/api/mission/get-parent-mission",
       type: "GET",
       contentType: "application/json", // 設置 Content-Type
       // success要改成箭頭函數，不然裡面的this不會是vue實例
@@ -126,7 +126,7 @@ export default {
     chooseCategory(event) {
       console.log(event.target);
       const targetButton = $(event.target);
-      var categoryId = targetButton.attr('id').substring(3);
+      var categoryId = targetButton.attr("id").substring(3);
       this.activeCategory = this.currentCategory === categoryId ? null : categoryId;
       this.currentCategory = categoryId;
       console.log(this.currentCategory);
@@ -141,7 +141,7 @@ export default {
       handler(newValue, oldValue) {
         // 取得任務分類
         $.ajax({
-          url: "https://localhost:44366/api/mission-category/get-all",
+          url: "http://localhost:44366/api/mission-category/get-all",
           type: "GET",
           contentType: "application/json", // 設置 Content-Type
           // success要改成箭頭函數，不然裡面的this不會是vue實例
@@ -196,7 +196,7 @@ export default {
           }
         });
       },
-    }
+    },
   },
 };
 </script>
