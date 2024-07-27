@@ -111,6 +111,8 @@
 <script>
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
 export default {
   name: "Main",
@@ -127,6 +129,9 @@ export default {
       // 所有和當前語系的
       category: [],
       currentLangCategory: [],
+      currentEditOrAdd:{
+
+      },
       events: [
         // event definition
         // {
@@ -141,24 +146,26 @@ export default {
       ],
       currentEvents: [],
       calendarOptions: {
-        plugins: [dayGridPlugin],
+        plugins: [
+          dayGridPlugin,
+          timeGridPlugin,
+          interactionPlugin // needed for dateClick
+        ],
         initialView: "dayGridMonth",
         weekends: true,
         events: this.events, // Use the events array here
+        // 點擊月曆上的任務會觸發
+        eventClick:this.handleEventClick,
+        // 是否能夠拖拉任務
+        editable: true,
+        // selectMirror: true,
+        // 點擊對應日期，即可觸發的動作(下面兩個)
+        selectable: true,
+        select: this.handleDateSelect,
         headerToolbar: {
           left: "prev,next,addEventButton",
           center: "title",
           right: "dayGridMonth,timeGridWeek",
-        },
-        customButtons: {
-          addEventButton: {
-            text: "add event...",
-            click: function () {
-              // add-modal定義
-              var myModal = new bootstrap.Modal(document.getElementById("add-modal"));
-              myModal.show();
-            },
-          },
         },
       },
     };
@@ -246,8 +253,32 @@ export default {
     this.calendarOptions.events = this.events;
   },
   methods: {
+
+    //  點擊對應日期，即可觸發的動作
+    handleDateSelect(selectInfo){
+      // 可以得到當前日期
+      console.log(selectInfo);
+
+      // 設置開始日期和時間
+      var dateString = selectInfo.startStr;
+      var date = dateString.split('-');
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const formattedDateTime = `${date[0]}-${date[1]}-${date[2]}T${hours}:${minutes}`;
+      $("#task-start-date").val(formattedDateTime);
+
+      var myModal = new bootstrap.Modal(document.getElementById("add-modal"));
+      myModal.show();
+    },
+
+    // 點擊月曆上的任務會觸發
+    handleEventClick(clickInfo) {
+      console.log(clickInfo);
+    },
+
+    // 新增任務
     addMission() {
-      // 新增任務
       var taskName = $("#task-name").val();
       var taskDescription = $("#task-description").val();
       var taskCategory = $("#task-category").val();
@@ -340,8 +371,12 @@ export default {
     },
     // 監測語系改變(主)
     currentLang: {
+      immediate: true,
       handler(newValue, oldValue) {
         // filter月曆上的mission
+        console.log('currentLang watch');
+        console.log(this.events);
+        console.log(this.currentLang);
         // 清除舊陣列元素
         this.currentEvents.length = 0;
         $.each(this.events, (index, value) => {
@@ -364,13 +399,13 @@ export default {
 
 .event-description {
   display: none;
-  position: absolute; /* Position it absolutely within the container */
+  position: absolute;
   background: #f9f9f9;
   color: black;
   border: 1px solid #ccc;
   padding: 5px;
-  z-index: 10000; /* Ensure it is on top */
-  top: 100%; /* Adjust according to your needs */
+  z-index: 10000;
+  top: 100%;
   left: 0;
 }
 
