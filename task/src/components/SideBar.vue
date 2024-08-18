@@ -76,7 +76,7 @@ export default {
 
     // 加載任務類別
     $.ajax({
-      url: "http://localhost:44366/api/mission-category/get-all",
+      url: "http://172.24.144.1:44366/api/mission-category/get-all",
       type: "GET",
       contentType: "application/json", // 設置 Content-Type
       // success要改成箭頭函數，不然裡面的this不會是vue實例
@@ -101,7 +101,7 @@ export default {
 
     // 加載所有任務
     $.ajax({
-      url: "http://localhost:44366/api/mission/get-parent-mission",
+      url: "http://172.24.144.1:44366/api/mission/get-parent-mission",
       type: "GET",
       contentType: "application/json", // 設置 Content-Type
       // success要改成箭頭函數，不然裡面的this不會是vue實例
@@ -141,7 +141,7 @@ export default {
       handler(newValue, oldValue) {
         // 取得任務分類
         $.ajax({
-          url: "http://localhost:44366/api/mission-category/get-all",
+          url: "http://172.24.144.1:44366/api/mission-category/get-all",
           type: "GET",
           contentType: "application/json", // 設置 Content-Type
           // success要改成箭頭函數，不然裡面的this不會是vue實例

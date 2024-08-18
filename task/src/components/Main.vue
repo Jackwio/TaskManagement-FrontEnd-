@@ -4,8 +4,10 @@
       <template v-slot:eventContent="arg">
         <div class="event-container">
           <b>{{ arg.timeText }}</b>
-          <i>{{ arg.event.title }}</i>
-          <div class="event-description">{{ arg.event.extendedProps.description }}</div>
+          <i>{{ arg.event ? arg.event.title : 'No Title' }}</i>
+          <div class="event-description">
+            {{ arg.event && arg.event.extendedProps ? arg.event.extendedProps.description : 'No Description' }}
+          </div>
         </div>
       </template>
     </FullCalendar>
@@ -129,9 +131,7 @@ export default {
       // 所有和當前語系的
       category: [],
       currentLangCategory: [],
-      currentEditOrAdd:{
-
-      },
+      currentEditOrAdd: {},
       events: [
         // event definition
         // {
@@ -155,9 +155,10 @@ export default {
         weekends: true,
         events: this.events, // Use the events array here
         // 點擊月曆上的任務會觸發
-        eventClick:this.handleEventClick,
+        eventClick: this.handleEventClick,
         // 是否能夠拖拉任務
         editable: true,
+        eventDrop: this.handleEventDrop,
         // selectMirror: true,
         // 點擊對應日期，即可觸發的動作(下面兩個)
         selectable: true,
@@ -189,7 +190,7 @@ export default {
 
     // 撈後端父任務
     $.ajax({
-      url: "http://localhost:44366/api/mission/get-parent-mission",
+      url: "http://172.24.144.1:44366/api/mission/get-parent",
       type: "GET",
       contentType: "application/json", // 設置 Content-Type
       success: (response) => {
@@ -226,7 +227,7 @@ export default {
 
     // 撈任務類別
     $.ajax({
-      url: "http://localhost:44366/api/mission-category/get-all",
+      url: "http://172.24.144.1:44366/api/mission-category/get-all",
       type: "GET",
       contentType: "application/json", // 設置 Content-Type
       // success要改成箭頭函數，不然裡面的this不會是vue實例
@@ -255,7 +256,7 @@ export default {
   methods: {
 
     //  點擊對應日期，即可觸發的動作
-    handleDateSelect(selectInfo){
+    handleDateSelect(selectInfo) {
       // 可以得到當前日期
       console.log(selectInfo);
 
@@ -275,6 +276,11 @@ export default {
     // 點擊月曆上的任務會觸發
     handleEventClick(clickInfo) {
       console.log(clickInfo);
+    },
+
+    // 點擊月曆上的任務拖拉觸發
+    handleEventDrop(dragInfo) {
+      console.log(dragInfo);
     },
 
     // 新增任務
@@ -297,7 +303,7 @@ export default {
       console.log(data);
 
       $.ajax({
-        url: "http://localhost:44366/api/mission/data-post",
+        url: "http://172.24.144.1:44366/api/mission/data-post",
         type: "POST",
         contentType: "application/json", // 設置 Content-Type
         data: JSON.stringify(data),
